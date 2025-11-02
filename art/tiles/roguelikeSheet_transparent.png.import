@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2ekcfyn7hp48"
-path="res://.godot/imported/medieval_tilesheet.png-fe0ddf9ec48d5006c8a1a62ecedc35cb.ctex"
+uid="uid://c6j07e2dkygu6"
+path="res://.godot/imported/roguelikeSheet_transparent.png-d41d39334e0bcdd171d97a258f91ac61.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/tiles/medieval_tilesheet.png"
-dest_files=["res://.godot/imported/medieval_tilesheet.png-fe0ddf9ec48d5006c8a1a62ecedc35cb.ctex"]
+source_file="res://art/tiles/roguelikeSheet_transparent.png"
+dest_files=["res://.godot/imported/roguelikeSheet_transparent.png-d41d39334e0bcdd171d97a258f91ac61.ctex"]
 
 [params]
 
