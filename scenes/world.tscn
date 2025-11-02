@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://os1m6s0ljdo4"]
+[gd_scene load_steps=5 format=3 uid="uid://os1m6s0ljdo4"]
 
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
 [ext_resource type="PackedScene" uid="uid://cc7gqs5d3ld4t" path="res://scenes/enemy.tscn" id="3_4wyf3"]
+[ext_resource type="Script" uid="uid://borem4ksvhkfm" path="res://scripts/player.gd" id="3_k0juu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwgxs"]
 size = Vector2(60, 77)
@@ -22,5 +23,9 @@ position = Vector2(1232, 54)
 position = Vector2(0, -6.5)
 shape = SubResource("RectangleShape2D_rwgxs")
 
-[node name="Enemy" parent="." instance=ExtResource("3_4wyf3")]
-position = Vector2(586, 257)
+[node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("spawn_parent_path")]
+script = ExtResource("3_k0juu")
+enemy_scene = ExtResource("3_4wyf3")
+spawn_parent_path = NodePath("../Enemies")
+
+[node name="Enemies" type="Node2D" parent="."]
