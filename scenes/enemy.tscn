@@ -1,8 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://cc7gqs5d3ld4t"]
+[gd_scene load_steps=19 format=3 uid="uid://cc7gqs5d3ld4t"]
 
 [ext_resource type="Script" uid="uid://dot18tt1ghppi" path="res://scripts/enemy.gd" id="1_md0e3"]
 [ext_resource type="Texture2D" uid="uid://d1apevygsrfae" path="res://art/sprites/DinoSprites - vita.png" id="3_4ra3w"]
-[ext_resource type="Script" uid="uid://dp6hxjf5ute40" path="res://scripts/state_debug_label.gd" id="3_5uy6h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
 
@@ -136,6 +135,3 @@ shape = SubResource("RectangleShape2D_7p1mj")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_c4w8v")
 animation = &"attack"
-
-[node name="Node2D" type="Node2D" parent="."]
-script = ExtResource("3_5uy6h")

@@ -1,8 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://b22drsgl0fpi"]
+[gd_scene load_steps=19 format=3 uid="uid://b22drsgl0fpi"]
 
 [ext_resource type="Texture2D" uid="uid://d1apevygsrfae" path="res://art/sprites/DinoSprites - vita.png" id="1_3uyx6"]
 [ext_resource type="Script" uid="uid://6kkfn8oebc8p" path="res://scripts/hero.gd" id="1_yvbpl"]
-[ext_resource type="Script" uid="uid://dp6hxjf5ute40" path="res://scripts/state_debug_label.gd" id="3_06baw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sryfu"]
 atlas = ExtResource("1_3uyx6")
@@ -139,6 +138,3 @@ frame_progress = 0.21031933
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0.5)
 shape = SubResource("RectangleShape2D_sryfu")
-
-[node name="Node2D" type="Node2D" parent="."]
-script = ExtResource("3_06baw")

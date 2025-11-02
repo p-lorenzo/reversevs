@@ -1,88 +1,133 @@
-extends CharacterBody2D
+extends NPCStateMachineBody2D
 
 enum State { MOVE_TO_CASTLE, CHASE_ENEMY, ATTACK, IDLE }
 
-@onready var target = $"../BossCastle"
+@onready var target: Node2D = $"../BossCastle"
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
 @export var speed: float = 250.0
-var aggro_range: float = 200.0
+@export var aggro_range: float = 200.0
 @export var attack_range: float = 20.0
+@export var arrival_threshold: float = 8.0
 
-var state: int = State.MOVE_TO_CASTLE
+@export var attack_cooldown: float = 0.7
+var _attack_timer: float = 0.0
+
 var enemy: Node2D = null
 
 func _ready() -> void:
-	if target and target.has_method("connect"):
+	if is_instance_valid(target) and target.has_signal("body_entered"):
 		target.connect("body_entered", Callable(self, "_on_castle_body_entered"))
+	super._ready()
 
-func _physics_process(delta: float) -> void:
-	match state:
+func _default_state() -> int:
+	return State.MOVE_TO_CASTLE
+
+func _physics_state(delta: float, current_state: int) -> void:
+	if _attack_timer > 0.0:
+		_attack_timer = max(0.0, _attack_timer - delta)
+
+	match current_state:
 		State.MOVE_TO_CASTLE:
-			# cerca nemici in aggro
 			enemy = _get_nearest_enemy_in_range(aggro_range)
-			if enemy:
-				state = State.CHASE_ENEMY
-				return
 
-			var to_castle = target.global_position - global_position
-			if to_castle.length() <= 8.0:
+			var to_castle := Vector2.ZERO
+			if is_instance_valid(target):
+				to_castle = target.global_position - global_position
+
+			if to_castle.length() <= arrival_threshold:
 				velocity = Vector2.ZERO
 				move_and_slide()
-				state = State.IDLE
-				animated_sprite_2d.play("idle")
-				return
-
-			velocity = to_castle.normalized() * speed
-			move_and_slide()
-			animated_sprite_2d.play("walk")
+				if animated_sprite_2d: animated_sprite_2d.play("idle")
+			else:
+				velocity = to_castle.normalized() * speed
+				move_and_slide()
+				if animated_sprite_2d: animated_sprite_2d.play("walk")
 
 		State.CHASE_ENEMY:
 			if not is_instance_valid(enemy):
 				enemy = _get_nearest_enemy_in_range(aggro_range)
 				if not enemy:
-					state = State.MOVE_TO_CASTLE
+					velocity = Vector2.ZERO
+					move_and_slide()
+					if animated_sprite_2d: animated_sprite_2d.play("idle")
 					return
 
-			var dist_enemy = global_position.distance_to(enemy.global_position)
-			
-			if dist_enemy <= attack_range:
-				state = State.ATTACK
-				velocity = Vector2.ZERO
-				move_and_slide()
-				animated_sprite_2d.play("attack")
-				return
+			var dir := (enemy.global_position - global_position)
+			var dist_enemy := dir.length()
 
-			velocity = (enemy.global_position - global_position).normalized() * speed
+			if dist_enemy > 1.0:
+				velocity = dir.normalized() * speed
+			else:
+				velocity = Vector2.ZERO
+
 			move_and_slide()
-			animated_sprite_2d.play("walk")
+			if animated_sprite_2d: animated_sprite_2d.play("walk")
 
 		State.ATTACK:
-			if not is_instance_valid(enemy) or global_position.distance_to(enemy.global_position) > attack_range:
-				state = State.CHASE_ENEMY
-				return
-			
-			# semplice comportamento di attacco (da espandere con cooldown / danno)
 			velocity = Vector2.ZERO
 			move_and_slide()
-			animated_sprite_2d.play("attack")
+			if animated_sprite_2d: animated_sprite_2d.play("attack")
+
+			if _attack_timer == 0.0 and is_instance_valid(enemy):
+				_perform_attack(enemy)
+				_attack_timer = attack_cooldown
 
 		State.IDLE:
 			velocity = Vector2.ZERO
 			move_and_slide()
-			animated_sprite_2d.play("idle")
-			# continua a cercare nemici anche in idle
+			if animated_sprite_2d: animated_sprite_2d.play("idle")
 			enemy = _get_nearest_enemy_in_range(aggro_range)
+
+func _query_next_state(current_state: int, delta: float) -> int:
+	match current_state:
+		State.MOVE_TO_CASTLE:
 			if enemy:
-				state = State.CHASE_ENEMY
+				return State.CHASE_ENEMY
+			if is_instance_valid(target):
+				var to_castle := target.global_position - global_position
+				if to_castle.length() <= arrival_threshold:
+					return State.IDLE
+			return State.MOVE_TO_CASTLE
+
+		State.CHASE_ENEMY:
+			if not is_instance_valid(enemy):
+				enemy = _get_nearest_enemy_in_range(aggro_range)
+				return State.MOVE_TO_CASTLE if not enemy else State.CHASE_ENEMY
+			var dist_enemy := global_position.distance_to(enemy.global_position)
+			if dist_enemy <= attack_range:
+				return State.ATTACK
+			return State.CHASE_ENEMY
+
+		State.ATTACK:
+			if not is_instance_valid(enemy):
+				return State.MOVE_TO_CASTLE
+			var dist_enemy := global_position.distance_to(enemy.global_position)
+			if dist_enemy > attack_range:
+				return State.CHASE_ENEMY
+			return State.ATTACK
+
+		State.IDLE:
+			if enemy:
+				return State.CHASE_ENEMY
+			return State.IDLE
+
+	return current_state
+
+func _on_state_enter(new_state: int) -> void:
+	if new_state == State.ATTACK:
+		_attack_timer = 0.0
+
+func _perform_attack(target_enemy: Node2D) -> void:
+	pass
 
 func _get_nearest_enemy_in_range(range: float) -> Node2D:
 	var nearest: Node2D = null
-	var best_dist = range
+	var best_dist := range
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if not (e is Node2D):
 			continue
-		var d = global_position.distance_to(e.global_position)
+		var d := global_position.distance_to(e.global_position)
 		if d <= best_dist:
 			best_dist = d
 			nearest = e
@@ -90,7 +135,7 @@ func _get_nearest_enemy_in_range(range: float) -> Node2D:
 
 func _on_castle_body_entered(body: Node) -> void:
 	if body == self:
-		state = State.IDLE
+		force_state(State.IDLE)
 		velocity = Vector2.ZERO
 		move_and_slide()
-		animated_sprite_2d.play("idle")
+		if animated_sprite_2d: animated_sprite_2d.play("idle")

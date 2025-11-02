@@ -1362,6 +1362,7 @@ sources/0 = SubResource("TileSetAtlasSource_rwgxs")
 size = Vector2(60, 77)
 
 [node name="Node2D" type="Node2D"]
+metadata/_edit_vertical_guides_ = [-175.0]
 
 [node name="Hero" parent="." instance=ExtResource("2_rwgxs")]
 z_index = 1
