@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://b22drsgl0fpi"]
+[gd_scene load_steps=20 format=3 uid="uid://b22drsgl0fpi"]
 
 [ext_resource type="Texture2D" uid="uid://d1apevygsrfae" path="res://art/sprites/DinoSprites - vita.png" id="1_3uyx6"]
 [ext_resource type="Script" uid="uid://6kkfn8oebc8p" path="res://scripts/hero.gd" id="1_yvbpl"]
+[ext_resource type="Script" uid="uid://b76c7yacwtbu4" path="res://scripts/health_system.gd" id="3_06baw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sryfu"]
 atlas = ExtResource("1_3uyx6")
@@ -129,6 +130,7 @@ size = Vector2(15, 17)
 
 [node name="Hero" type="CharacterBody2D" groups=["hero"]]
 script = ExtResource("1_yvbpl")
+attack_range = 30.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_hbqj5")
@@ -138,3 +140,9 @@ frame_progress = 0.21031933
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0.5)
 shape = SubResource("RectangleShape2D_sryfu")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_06baw")
+max_health = 10
+
+[connection signal="died" from="Health" to="." method="_on_health_died"]

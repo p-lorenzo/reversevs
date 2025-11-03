@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://cc7gqs5d3ld4t"]
+[gd_scene load_steps=9 format=3 uid="uid://cc7gqs5d3ld4t"]
 
 [ext_resource type="Script" uid="uid://dot18tt1ghppi" path="res://scripts/enemy.gd" id="1_md0e3"]
 [ext_resource type="Texture2D" uid="uid://v0ckg3m58nm8" path="res://art/sprites/Bat sprite.png" id="2_md0e3"]
+[ext_resource type="Script" uid="uid://b76c7yacwtbu4" path="res://scripts/health_system.gd" id="3_4ra3w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
 
@@ -63,7 +64,9 @@ animations = [{
 }]
 
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 2
 script = ExtResource("1_md0e3")
+attack_range = 20.0
 metadata/_edit_horizontal_guides_ = [-20.0]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -72,3 +75,9 @@ shape = SubResource("RectangleShape2D_7p1mj")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_xwavj")
 animation = &"attack"
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_4ra3w")
+max_health = 1
+
+[connection signal="died" from="Health" to="." method="_on_health_died"]

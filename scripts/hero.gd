@@ -119,6 +119,10 @@ func _on_state_enter(new_state: int) -> void:
 		_attack_timer = 0.0
 
 func _perform_attack(target_enemy: Node2D) -> void:
+	var hc := target_enemy.get_node_or_null("Health")
+	if hc and hc.has_method("take_damage"):
+		hc.take_damage(1)
+	
 	pass
 
 func _get_nearest_enemy_in_range(range: float) -> Node2D:
@@ -139,3 +143,7 @@ func _on_castle_body_entered(body: Node) -> void:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		if animated_sprite_2d: animated_sprite_2d.play("idle")
+
+
+func _on_health_died() -> void:
+	queue_free()

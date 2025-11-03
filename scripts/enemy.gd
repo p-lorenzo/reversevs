@@ -13,13 +13,12 @@ var attack_timer: float = 0.0
 
 func _ready() -> void:
 	_find_hero()
-	super._ready() # inizializza la state machine base
+	super._ready()
 
 func _default_state() -> int:
 	return States.CHASE if is_instance_valid(hero) else States.IDLE
 
 func _physics_state(delta: float, current_state: int) -> void:
-	# cooldown attacco
 	if attack_timer > 0.0:
 		attack_timer = max(0.0, attack_timer - delta)
 
@@ -57,13 +56,11 @@ func _physics_state(delta: float, current_state: int) -> void:
 			if animated_sprite_2d:
 				animated_sprite_2d.play("attack")
 
-			# spara l'attacco solo a cooldown pronto
 			if attack_timer == 0.0:
 				_perform_attack()
 				attack_timer = attack_cooldown
 
 func _query_next_state(current_state: int, delta: float) -> int:
-	# Gestione transizioni separata dalla logica
 	match current_state:
 		States.IDLE:
 			if is_instance_valid(hero):
@@ -95,12 +92,16 @@ func _on_state_enter(new_state: int) -> void:
 		attack_timer = 0.0
 
 func _perform_attack() -> void:
-	# Qui metti segnale/danno effettivo.
-	# Esempio: emit_signal("hit", hero) o chiamata a un HealthComponent
-	# Per ora è un placeholder, come la dieta il 2 gennaio.
+	if is_instance_valid(hero):
+		var hc := hero.get_node_or_null("Health")
+		if hc and hc.has_method("take_damage"):
+			hc.take_damage(1)
 	pass
 
 func _find_hero() -> void:
 	var list := get_tree().get_nodes_in_group("hero")
 	if list.size() > 0 and list[0] is Node2D:
 		hero = list[0]
+
+func _on_health_died() -> void:
+	queue_free()

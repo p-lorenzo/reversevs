@@ -1,3 +1,4 @@
+@abstract
 class_name NPCStateMachineBody2D
 extends CharacterBody2D
 
@@ -38,10 +39,9 @@ func _physics_process(delta: float) -> void:
 		_update_state_label()
 
 	_update_state_label_position()
-
-func _default_state() -> int:
-	push_error("Implementa _default_state() nella sottoclasse.")
-	return 0
+	
+@abstract
+func _default_state() -> int
 
 func _physics_state(delta: float, current_state: int) -> void:
 	pass
