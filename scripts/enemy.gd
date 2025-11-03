@@ -4,6 +4,7 @@ enum States { IDLE, CHASE, ATTACK }
 
 @onready var hero: Node2D = null
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var slash_particle: Node2D = $slash
 
 @export var speed: float = 120.0
 @export var attack_range: float = 40.0
@@ -87,7 +88,8 @@ func _query_next_state(current_state: int, delta: float) -> int:
 	return current_state
 
 func _perform_attack() -> void:
-	print_debug("enemy " + str(self) + " attacks hero " + str(hero) + "for 1 damage")
+	slash_particle.look_at(hero.global_position)
+	slash_particle.get_child(0).emitting = true
 	if is_instance_valid(hero):
 		var hc := hero.get_node_or_null("Health")
 		if hc and hc.has_method("take_damage"):
