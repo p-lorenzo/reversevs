@@ -24,7 +24,18 @@ func _ready() -> void:
 func _default_state() -> int:
 	return States.MOVE_TO_CASTLE
 
+func _update_facing() -> void:
+	if not animated_sprite_2d:
+		return
+	if abs(velocity.x) > 0.0001:
+		animated_sprite_2d.flip_h = velocity.x < 0
+		return
+	if is_instance_valid(enemy):
+		animated_sprite_2d.flip_h = enemy.global_position.x < global_position.x
+
 func _physics_state(delta: float, current_state: int) -> void:
+	_update_facing()
+	
 	if _attack_timer > 0.0:
 		_attack_timer = max(0.0, _attack_timer - delta)
 
