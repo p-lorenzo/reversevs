@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="reversevs"
-run/main_scene="uid://os1m6s0ljdo4"
+run/main_scene="uid://beb2370gitmgw"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="viewport"
+
+[feature_flags]
+
+show_state_labels=false
 
 [rendering]
 

@@ -43,11 +43,11 @@ func _physics_process(delta: float) -> void:
 @abstract
 func _default_state() -> int
 
-func _physics_state(delta: float, current_state: int) -> void:
-	pass
+@abstract
+func _physics_state(delta: float, current_state: int) -> void
 
-func _query_next_state(current_state: int, delta: float) -> int:
-	return current_state
+@abstract
+func _query_next_state(current_state: int, delta: float) -> int
 
 func _on_state_enter(new_state: int) -> void:
 	pass
@@ -93,7 +93,8 @@ func _should_show_state_label() -> bool:
 		DebugLabelMode.OFF:
 			return false
 		DebugLabelMode.AUTO:
-			return Engine.is_editor_hint() or OS.is_debug_build()
+			var flag : bool = ProjectSettings.get_setting("feature_flags/show_state_labels", true)
+			return (Engine.is_editor_hint() or OS.is_debug_build()) and bool(flag)
 	return false
 
 func _setup_state_label_if_needed() -> void:
