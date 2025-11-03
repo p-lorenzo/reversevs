@@ -1,6 +1,6 @@
 extends NPCStateMachineBody2D
 
-enum State { MOVE_TO_CASTLE, CHASE_ENEMY, ATTACK, IDLE }
+enum States { MOVE_TO_CASTLE, CHASE_ENEMY, ATTACK, IDLE }
 
 @onready var target: Node2D = $"../BossCastle"
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
@@ -21,14 +21,14 @@ func _ready() -> void:
 	super._ready()
 
 func _default_state() -> int:
-	return State.MOVE_TO_CASTLE
+	return States.MOVE_TO_CASTLE
 
 func _physics_state(delta: float, current_state: int) -> void:
 	if _attack_timer > 0.0:
 		_attack_timer = max(0.0, _attack_timer - delta)
 
 	match current_state:
-		State.MOVE_TO_CASTLE:
+		States.MOVE_TO_CASTLE:
 			enemy = _get_nearest_enemy_in_range(aggro_range)
 
 			var to_castle := Vector2.ZERO
@@ -44,7 +44,7 @@ func _physics_state(delta: float, current_state: int) -> void:
 				move_and_slide()
 				if animated_sprite_2d: animated_sprite_2d.play("walk")
 
-		State.CHASE_ENEMY:
+		States.CHASE_ENEMY:
 			if not is_instance_valid(enemy):
 				enemy = _get_nearest_enemy_in_range(aggro_range)
 				if not enemy:
@@ -64,16 +64,16 @@ func _physics_state(delta: float, current_state: int) -> void:
 			move_and_slide()
 			if animated_sprite_2d: animated_sprite_2d.play("walk")
 
-		State.ATTACK:
+		States.ATTACK:
 			velocity = Vector2.ZERO
 			move_and_slide()
 			if animated_sprite_2d: animated_sprite_2d.play("attack")
 
-			if _attack_timer == 0.0 and is_instance_valid(enemy):
+			if _attack_timer <= 0.0 and is_instance_valid(enemy):
 				_perform_attack(enemy)
 				_attack_timer = attack_cooldown
 
-		State.IDLE:
+		States.IDLE:
 			velocity = Vector2.ZERO
 			move_and_slide()
 			if animated_sprite_2d: animated_sprite_2d.play("idle")
@@ -81,44 +81,42 @@ func _physics_state(delta: float, current_state: int) -> void:
 
 func _query_next_state(current_state: int, delta: float) -> int:
 	match current_state:
-		State.MOVE_TO_CASTLE:
+		States.MOVE_TO_CASTLE:
 			if enemy:
-				return State.CHASE_ENEMY
+				return States.CHASE_ENEMY
 			if is_instance_valid(target):
 				var to_castle := target.global_position - global_position
 				if to_castle.length() <= arrival_threshold:
-					return State.IDLE
-			return State.MOVE_TO_CASTLE
+					return States.IDLE
+			return States.MOVE_TO_CASTLE
 
-		State.CHASE_ENEMY:
+		States.CHASE_ENEMY:
 			if not is_instance_valid(enemy):
 				enemy = _get_nearest_enemy_in_range(aggro_range)
-				return State.MOVE_TO_CASTLE if not enemy else State.CHASE_ENEMY
+				return States.MOVE_TO_CASTLE if not enemy else States.CHASE_ENEMY
 			var dist_enemy := global_position.distance_to(enemy.global_position)
 			if dist_enemy <= attack_range:
-				return State.ATTACK
-			return State.CHASE_ENEMY
+				return States.ATTACK
+			return States.CHASE_ENEMY
 
-		State.ATTACK:
+		States.ATTACK:
 			if not is_instance_valid(enemy):
-				return State.MOVE_TO_CASTLE
+				return States.MOVE_TO_CASTLE
 			var dist_enemy := global_position.distance_to(enemy.global_position)
-			if dist_enemy > attack_range:
-				return State.CHASE_ENEMY
-			return State.ATTACK
+			if dist_enemy > attack_range + 4.0:
+				return States.CHASE_ENEMY
+			if dist_enemy <= attack_range:
+				return States.ATTACK
 
-		State.IDLE:
+		States.IDLE:
 			if enemy:
-				return State.CHASE_ENEMY
-			return State.IDLE
+				return States.CHASE_ENEMY
+			return States.IDLE
 
 	return current_state
 
-func _on_state_enter(new_state: int) -> void:
-	if new_state == State.ATTACK:
-		_attack_timer = 0.0
-
 func _perform_attack(target_enemy: Node2D) -> void:
+	print_debug("hero " + str(self) + " attacks enemy " + str(target_enemy) + " for 1 damage")
 	var hc := target_enemy.get_node_or_null("Health")
 	if hc and hc.has_method("take_damage"):
 		hc.take_damage(1)
@@ -139,7 +137,7 @@ func _get_nearest_enemy_in_range(range: float) -> Node2D:
 
 func _on_castle_body_entered(body: Node) -> void:
 	if body == self:
-		force_state(State.IDLE)
+		force_state(States.IDLE)
 		velocity = Vector2.ZERO
 		move_and_slide()
 		if animated_sprite_2d: animated_sprite_2d.play("idle")

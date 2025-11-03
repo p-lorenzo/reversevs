@@ -14,7 +14,6 @@ metadata/_edit_vertical_guides_ = [-175.0]
 z_index = 1
 position = Vector2(23, 686)
 speed = 200.0
-attack_range = 30.0
 
 [node name="BossCastle" type="Area2D" parent="."]
 position = Vector2(1232, 54)

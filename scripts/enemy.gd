@@ -9,7 +9,7 @@ enum States { IDLE, CHASE, ATTACK }
 @export var attack_range: float = 40.0
 @export var attack_cooldown: float = 1.0
 
-var attack_timer: float = 0.0
+var _attack_timer: float = 0.0
 
 func _ready() -> void:
 	_find_hero()
@@ -19,8 +19,8 @@ func _default_state() -> int:
 	return States.CHASE if is_instance_valid(hero) else States.IDLE
 
 func _physics_state(delta: float, current_state: int) -> void:
-	if attack_timer > 0.0:
-		attack_timer = max(0.0, attack_timer - delta)
+	if _attack_timer > 0.0:
+		_attack_timer = max(0.0, _attack_timer - delta)
 
 	match current_state:
 		States.IDLE:
@@ -56,9 +56,9 @@ func _physics_state(delta: float, current_state: int) -> void:
 			if animated_sprite_2d:
 				animated_sprite_2d.play("attack")
 
-			if attack_timer == 0.0:
+			if _attack_timer <= 0.0:
 				_perform_attack()
-				attack_timer = attack_cooldown
+				_attack_timer = attack_cooldown
 
 func _query_next_state(current_state: int, delta: float) -> int:
 	match current_state:
@@ -79,19 +79,15 @@ func _query_next_state(current_state: int, delta: float) -> int:
 			if not is_instance_valid(hero):
 				return States.IDLE
 			var dist := global_position.distance_to(hero.global_position)
-			if dist > attack_range:
+			if dist > attack_range + 4.0:
 				return States.CHASE
-			return States.ATTACK
+			if dist <= attack_range:
+				return States.ATTACK
 
 	return current_state
 
-func _on_state_enter(new_state: int) -> void:
-	# Se vuoi side-effect quando entri in uno stato
-	if new_state == States.ATTACK:
-		# reset opzionale per attaccare subito all'ingresso
-		attack_timer = 0.0
-
 func _perform_attack() -> void:
+	print_debug("enemy " + str(self) + " attacks hero " + str(hero) + "for 1 damage")
 	if is_instance_valid(hero):
 		var hc := hero.get_node_or_null("Health")
 		if hc and hc.has_method("take_damage"):
