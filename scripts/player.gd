@@ -5,6 +5,7 @@ class_name SpawnerOnClick
 @export var enemy_scene: PackedScene          # assegna qui la scena dell'enemy (PackedScene)
 @export var spawn_parent_path: Node
 @export var add_to_enemies_group := true      # metti automaticamente i nuovi in "enemies"
+@export var enabled_in_plan_only := true
 
 var _spawn_parent: Node = null
 
@@ -12,6 +13,11 @@ func _ready() -> void:
 	_spawn_parent = spawn_parent_path
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_accept"):
+		Game.start_sim()
+
+	if enabled_in_plan_only and (typeof(Game) != TYPE_NIL) and not Game.is_plan_phase():
+		return
 	# Mouse sinistro
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_spawn_at(get_global_mouse_position())

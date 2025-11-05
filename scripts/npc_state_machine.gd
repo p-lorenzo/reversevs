@@ -24,6 +24,12 @@ func _ready() -> void:
 	_update_state_label()
 
 func _physics_process(delta: float) -> void:
+	if typeof(Game) != TYPE_NIL and not Game.is_simulation_active():
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_update_state_label_position()
+		return
+
 	state_time += delta
 
 	_physics_state(delta, state)
