@@ -88,12 +88,13 @@ func _query_next_state(current_state: int, delta: float) -> int:
 	return current_state
 
 func _perform_attack() -> void:
-	slash_particle.look_at(hero.global_position)
-	slash_particle.get_child(0).emitting = true
 	if is_instance_valid(hero):
-		var hc := hero.get_node_or_null("Health")
-		if hc and hc.has_method("take_damage"):
-			hc.take_damage(1)
+		slash_particle.look_at(hero.global_position)
+		slash_particle.get_child(0).emitting = true
+		if is_instance_valid(hero):
+			var hc := hero.get_node_or_null("Health")
+			if hc and hc.has_method("take_damage"):
+				hc.take_damage(1)
 	pass
 
 func _find_hero() -> void:

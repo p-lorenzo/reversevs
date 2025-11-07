@@ -1,9 +1,8 @@
 extends Node
 # niente class_name se l’Autoload si chiama già Game
 
-enum Phase { PLAN, SIM }
+enum Phase { PLAN, SIM, CASTLE_REACHED, HERO_DIED }
 signal phase_changed(new_phase: int)          # per aggiornare UI fase
-signal wave_ended(reason: String)             # "all_enemies_defeated" | "hero_dead" | "castle_reached"
 
 var phase: int = Phase.PLAN
 var hero: Node2D = null
@@ -14,9 +13,13 @@ var remaining_enemies: int = 0
 func get_phase_name(p: int = phase) -> String:
 	match p:
 		Phase.PLAN:
-			return "PLAN"
+			return "Planning Wave"
 		Phase.SIM:
-			return "SIM"
+			return "Fighting Wave"
+		Phase.CASTLE_REACHED:
+			return "Castle Reached!"
+		Phase.HERO_DIED:
+			return "Hero Died!"
 	return str(p)
 
 func _ready() -> void:
@@ -64,7 +67,6 @@ func _on_enemy_died() -> void:
 		_end_simulation("all_enemies_defeated")
 
 func _end_simulation(reason: String) -> void:
-	wave_ended.emit(reason)
 	start_plan()
 
 func _refresh_hero() -> void:
@@ -77,10 +79,12 @@ func _refresh_hero() -> void:
 
 func _on_hero_died() -> void:
 	if phase == Phase.SIM:
-		_end_simulation("hero_dead")
+		phase = Phase.HERO_DIED
+		phase_changed.emit(phase)
 
 func _on_castle_body_entered(body: Node) -> void:
 	if phase != Phase.SIM:
 		return
 	if body == hero:
-		_end_simulation("castle_reached")
+		phase = Phase.CASTLE_REACHED
+		phase_changed.emit(phase)
