@@ -1,8 +1,9 @@
 extends Node
+# niente class_name se l’Autoload si chiama già Game
 
 enum Phase { PLAN, SIM }
-signal phase_changed(new_phase: int)
-signal wave_ended(reason: String) # "all_enemies_defeated" | "hero_dead" | "castle_reached"
+signal phase_changed(new_phase: int)          # per aggiornare UI fase
+signal wave_ended(reason: String)             # "all_enemies_defeated" | "hero_dead" | "castle_reached"
 
 var phase: int = Phase.PLAN
 var hero: Node2D = null
@@ -10,15 +11,19 @@ var hero: Node2D = null
 var enemies_alive_at_sim_start: int = 0
 var remaining_enemies: int = 0
 
+func get_phase_name(p: int = phase) -> String:
+	match p:
+		Phase.PLAN:
+			return "PLAN"
+		Phase.SIM:
+			return "SIM"
+	return str(p)
+
 func _ready() -> void:
 	_refresh_hero()
 	for c in get_tree().get_nodes_in_group("castle"):
 		if c.has_signal("body_entered"):
 			c.connect("body_entered", _on_castle_body_entered)
-
-func _process(_delta: float) -> void:
-	if phase != Phase.SIM:
-		return
 
 func is_plan_phase() -> bool:
 	return phase == Phase.PLAN
@@ -45,7 +50,7 @@ func start_sim() -> void:
 
 	phase = Phase.SIM
 	phase_changed.emit(phase)
-	
+
 func _connect_enemy_death(e: Node) -> void:
 	var hc := e.get_node_or_null("Health")
 	if hc and hc.has_signal("died") and not hc.is_connected("died", Callable(self, "_on_enemy_died")):
