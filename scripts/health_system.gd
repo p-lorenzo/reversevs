@@ -1,6 +1,8 @@
 class_name HealthComponent
 extends Node
 
+@export var is_enemy: bool = false
+@export var exp_granted: int = 0
 @export var max_health: int = 100
 var current_health: int = max_health
 
@@ -40,3 +42,6 @@ func is_alive() -> bool:
 	
 func get_health_percentage() -> float:
 	return float(current_health) / float(max_health) if max_health > 0 else 0.0
+	
+func get_exp_granted() -> int:
+	return exp_granted

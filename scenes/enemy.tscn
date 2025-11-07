@@ -79,6 +79,8 @@ animation = &"attack"
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_4ra3w")
+is_enemy = true
+exp_granted = 1
 max_health = 1
 
 [node name="slash" parent="." instance=ExtResource("4_5uy6h")]
