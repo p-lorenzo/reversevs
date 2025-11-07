@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://beb2370gitmgw"]
+[gd_scene load_steps=7 format=3 uid="uid://beb2370gitmgw"]
 
+[ext_resource type="Texture2D" uid="uid://cr1upaw0lkltc" path="res://art/sprites/castle.png" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
 [ext_resource type="PackedScene" uid="uid://cc7gqs5d3ld4t" path="res://scenes/enemy.tscn" id="3_4wyf3"]
 [ext_resource type="Script" uid="uid://borem4ksvhkfm" path="res://scripts/player.gd" id="3_k0juu"]
 [ext_resource type="PackedScene" uid="uid://b30rmn847u86v" path="res://scenes/hud/phase.tscn" id="4_k0juu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwgxs"]
-size = Vector2(60, 77)
+size = Vector2(10, 8)
 
 [node name="world" type="Node2D"]
 metadata/_edit_vertical_guides_ = [-175.0]
@@ -25,10 +26,14 @@ state_label_bg = true
 initial_state = -1
 
 [node name="BossCastle" type="Area2D" parent="." groups=["castle"]]
-position = Vector2(603, 46)
+position = Vector2(612, 24)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BossCastle"]
+position = Vector2(0, 9)
 shape = SubResource("RectangleShape2D_rwgxs")
+
+[node name="Sprite2D" type="Sprite2D" parent="BossCastle"]
+texture = ExtResource("2_71j4m")
 
 [node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("spawn_parent_path")]
 script = ExtResource("3_k0juu")
