@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://beb2370gitmgw"]
+[gd_scene load_steps=9 format=3 uid="uid://beb2370gitmgw"]
 
 [ext_resource type="Texture2D" uid="uid://cr1upaw0lkltc" path="res://art/sprites/castle.png" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://borem4ksvhkfm" path="res://scripts/player.gd" id="3_k0juu"]
 [ext_resource type="PackedScene" uid="uid://b30rmn847u86v" path="res://scenes/hud/phase.tscn" id="4_k0juu"]
 [ext_resource type="PackedScene" uid="uid://cclv64l4lj4gt" path="res://scenes/hud/hearts.tscn" id="6_qfnet"]
+[ext_resource type="Theme" uid="uid://d22t3t8dknlxk" path="res://resources/themes/theme.tres" id="7_i7141"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwgxs"]
 size = Vector2(10, 8)
@@ -15,7 +16,7 @@ metadata/_edit_vertical_guides_ = [-175.0]
 
 [node name="Hero" parent="." instance=ExtResource("2_rwgxs")]
 z_index = 1
-position = Vector2(10, 347)
+position = Vector2(11, 308)
 speed = 200.0
 aggro_range = 200.0
 arrival_threshold = 8.0
@@ -51,8 +52,8 @@ layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_top = 10.0
-offset_bottom = 10.0
+offset_top = 5.0
+offset_bottom = 5.0
 grow_horizontal = 2
 
 [node name="phase" parent="CanvasLayer/CenterTop" instance=ExtResource("4_k0juu")]
@@ -64,7 +65,40 @@ grow_horizontal = 1
 
 [node name="LeftTop" type="Control" parent="CanvasLayer"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
 
 [node name="Hearts" parent="CanvasLayer/LeftTop" instance=ExtResource("6_qfnet")]
 layout_mode = 1
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -51.0
+offset_top = -49.0
+offset_right = -11.0
+offset_bottom = -9.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Button" type="Button" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -168.0
+offset_top = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("7_i7141")
+text = "START WAVE"
+
+[connection signal="pressed" from="CanvasLayer/Control/Button" to="Player" method="_on_button_pressed"]

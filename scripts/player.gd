@@ -47,3 +47,7 @@ func _spawn_at(world_pos: Vector2) -> void:
 
 	if add_to_enemies_group:
 		enemy.add_to_group("enemies")
+
+
+func _on_button_pressed() -> void:
+	Game.start_sim()
