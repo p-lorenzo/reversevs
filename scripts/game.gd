@@ -43,6 +43,8 @@ func start_plan() -> void:
 	remaining_enemies = 0
 
 func start_sim() -> void:
+	if phase != Phase.PLAN:
+		return
 	_refresh_hero()
 	enemies_alive_at_sim_start = 0
 	remaining_enemies = 0
