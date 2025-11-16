@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://cqmnuq4gs87mk"]
+
+[ext_resource type="PackedScene" uid="uid://dd6173tfr76c1" path="res://scenes/enemy2.tscn" id="1_44w6c"]
+[ext_resource type="Texture2D" uid="uid://bytue6oegodqv" path="res://art/sprites/bat2_icon.png" id="2_p7qna"]
+[ext_resource type="Script" uid="uid://do1haxjgysstf" path="res://scripts/inventory_item.gd" id="3_qcs0r"]
+
+[resource]
+script = ExtResource("3_qcs0r")
+entity_scene = ExtResource("1_44w6c")
+icon = ExtResource("2_p7qna")
+cost = 1

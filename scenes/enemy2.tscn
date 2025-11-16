@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3 uid="uid://dd6173tfr76c1"]
+
+[ext_resource type="Script" uid="uid://dot18tt1ghppi" path="res://scripts/enemy.gd" id="1_23kvp"]
+[ext_resource type="Texture2D" uid="uid://cxvf3eu3md6c4" path="res://art/sprites/Bat2 sprite.png" id="2_lsk8u"]
+[ext_resource type="Script" uid="uid://b76c7yacwtbu4" path="res://scripts/health_system.gd" id="3_lsk8u"]
+[ext_resource type="PackedScene" uid="uid://w4w7u6dy3xn6" path="res://scenes/particles/slash.tscn" id="4_thqno"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_thqno"]
+atlas = ExtResource("2_lsk8u")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4k25"]
+atlas = ExtResource("2_lsk8u")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slk5t"]
+atlas = ExtResource("2_lsk8u")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xwavj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_thqno")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4k25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slk5t")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_thqno")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4k25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slk5t")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_thqno")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4k25")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slk5t")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 2
+script = ExtResource("1_23kvp")
+attack_range = 20.0
+metadata/_edit_horizontal_guides_ = [-20.0]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_7p1mj")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_xwavj")
+animation = &"walk"
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("3_lsk8u")
+is_enemy = true
+exp_granted = 1
+max_health = 1
+
+[node name="slash" parent="." instance=ExtResource("4_thqno")]
+scale = Vector2(3, 3)
+
+[connection signal="died" from="Health" to="." method="_on_health_died"]
