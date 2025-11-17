@@ -5,6 +5,9 @@
 [ext_resource type="Script" uid="uid://b76c7yacwtbu4" path="res://scripts/health_system.gd" id="3_06baw"]
 [ext_resource type="PackedScene" uid="uid://w4w7u6dy3xn6" path="res://scenes/particles/slash.tscn" id="4_mv13s"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sryfu"]
+size = Vector2(15, 17)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_w7pyx"]
 atlas = ExtResource("2_mv13s")
 region = Rect2(0, 0, 16, 16)
@@ -62,29 +65,16 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sryfu"]
-size = Vector2(15, 17)
-
 [node name="Hero" type="CharacterBody2D" groups=["hero"]]
 script = ExtResource("1_yvbpl")
-speed = null
-aggro_range = null
-attack_range = 30.0
-arrival_threshold = null
-attack_cooldown = null
-state_label_mode = null
-state_label_offset = null
-state_label_font_size = null
-state_label_bg = null
-initial_state = null
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_hbqj5")
-animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 0.5)
 shape = SubResource("RectangleShape2D_sryfu")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_hbqj5")
+animation = &"idle"
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_06baw")
@@ -92,5 +82,9 @@ max_health = 10
 
 [node name="slash" parent="." instance=ExtResource("4_mv13s")]
 scale = Vector2(3, 3)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+target_desired_distance = 20.0
+avoidance_enabled = true
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]

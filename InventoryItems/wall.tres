@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://kcs7gp1p2g4r"]
+
+[ext_resource type="PackedScene" uid="uid://udb7fyvpr5j" path="res://scenes/wall.tscn" id="1_b0drq"]
+[ext_resource type="Texture2D" uid="uid://dpvi1o10yorqe" path="res://art/sprites/inv_cube.png" id="2_nm8pg"]
+[ext_resource type="Script" uid="uid://do1haxjgysstf" path="res://scripts/inventory_item.gd" id="3_g4rsj"]
+
+[resource]
+script = ExtResource("3_g4rsj")
+entity_scene = ExtResource("1_b0drq")
+icon = ExtResource("2_nm8pg")
+cost = 1

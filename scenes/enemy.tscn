@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://w4w7u6dy3xn6" path="res://scenes/particles/slash.tscn" id="4_5uy6h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
+size = Vector2(10, 10)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ra3w"]
 atlas = ExtResource("2_md0e3")
@@ -67,7 +68,6 @@ animations = [{
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 2
 script = ExtResource("1_md0e3")
-attack_range = 20.0
 metadata/_edit_horizontal_guides_ = [-20.0]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -85,5 +85,9 @@ max_health = 1
 
 [node name="slash" parent="." instance=ExtResource("4_5uy6h")]
 scale = Vector2(3, 3)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+target_desired_distance = 20.0
+avoidance_enabled = true
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]

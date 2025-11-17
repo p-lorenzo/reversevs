@@ -28,7 +28,7 @@ window/stretch/mode="viewport"
 
 [feature_flags]
 
-show_state_labels=false
+show_state_labels=true
 
 [rendering]
 
