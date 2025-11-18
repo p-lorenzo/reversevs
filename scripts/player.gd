@@ -96,7 +96,6 @@ func _on_button_pressed() -> void:
 	Game.start_sim()
 
 func highlight_cell(grid_pos: Vector2i) -> void:
-	# show the current inventory item sprite at the given grid position half-transparent
 	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
 	if highlight_sprite == null:
 		highlight_sprite = Sprite2D.new()
