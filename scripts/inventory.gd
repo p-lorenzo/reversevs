@@ -1,7 +1,7 @@
 extends HBoxContainer
 class_name Inventory
 
-signal selection_changed(selected_index: int, selected_scene: PackedScene)
+signal selection_changed(selected_index: int, selected_inventory_item: InventoryItem)
 
 # Export variables
 @export var empty_slot_texture: Texture2D
@@ -138,12 +138,12 @@ func select_slot(index: int) -> void:
 				style_box.border_color = Color(0.5, 0.5, 0.5, 1.0)  # Bordo grigio
 	
 	# Emetti segnale
-	var selected_scene: PackedScene = null
+	var selected_inventory_item: InventoryItem = null
 	if selected_index >= 0 and selected_index < inventory_items.size():
 		var item: InventoryItem = inventory_items[selected_index]
 		if item:
-			selected_scene = item.entity_scene
-	selection_changed.emit(selected_index, selected_scene)
+			selected_inventory_item = item
+	selection_changed.emit(selected_index, selected_inventory_item)
 
 func select_next() -> void:
 	if _slots.is_empty():

@@ -1,8 +1,7 @@
 extends Node
-# niente class_name se l’Autoload si chiama già Game
 
 enum Phase { PLAN, SIM, CASTLE_REACHED, HERO_DIED }
-signal phase_changed(new_phase: int)          # per aggiornare UI fase
+signal phase_changed(new_phase: int)
 
 var phase: int = Phase.PLAN
 var hero: Node2D = null
@@ -50,6 +49,7 @@ func start_sim() -> void:
 		return
 	nav_region.bake_navigation_polygon(false)
 	_refresh_hero()
+	Grid.free_mobile_entities_cells()
 	enemies_alive_at_sim_start = 0
 	remaining_enemies = 0
 	for e in get_tree().get_nodes_in_group("enemies"):

@@ -1,40 +1,42 @@
-# SpawnerOnClick.gd
 extends Node2D
 class_name SpawnerOnClick
 
-@export var enemy_scene: PackedScene          # Fallback se non c'è inventario
+@export var enemy_scene: PackedScene
 @export var spawn_parent_path: Node
-@export var add_to_enemies_group := true      # metti automaticamente i nuovi in "enemies"
 @export var enabled_in_plan_only := true
-@export var inventory: Inventory              # Riferimento all'inventario (opzionale)
+@export var inventory: Inventory
 
 var _spawn_parent: Node = null
 var _selected_scene: PackedScene = null
+var _selected_sprite_texture: Texture2D = null
 
 func _ready() -> void:
 	_spawn_parent = spawn_parent_path
 	_find_inventory()
 	
-	# Se abbiamo un inventario, ascolta i cambi di selezione
 	if inventory:
 		if not inventory.selection_changed.is_connected(_on_inventory_selection_changed):
 			inventory.selection_changed.connect(_on_inventory_selection_changed)
-		# Imposta la scena iniziale
 		_selected_scene = inventory.get_selected_scene()
 	elif enemy_scene:
-		# Fallback alla vecchia logica
 		_selected_scene = enemy_scene
+
+func _process(_delta: float) -> void:
+	if !Game.is_plan_phase(): return
+	var mouse_pos := get_global_mouse_position()
+	var grid_pos := Grid.world_to_grid(Grid.snap_to_grid(mouse_pos))
+	highlight_cell(grid_pos)
 
 func _find_inventory() -> void:
 	if inventory:
 		return
-	# Cerca l'inventario nella scena se non è stato assegnato
 	var invs := get_tree().get_nodes_in_group("inventory")
 	if invs.size() > 0 and invs[0] is Inventory:
 		inventory = invs[0]
 
-func _on_inventory_selection_changed(selected_index: int, selected_scene: PackedScene) -> void:
-	_selected_scene = selected_scene
+func _on_inventory_selection_changed(selected_index: int, selected_inventory_item: InventoryItem) -> void:
+	_selected_scene = selected_inventory_item.entity_scene
+	_selected_sprite_texture = selected_inventory_item.icon
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
@@ -47,29 +49,41 @@ func _unhandled_input(event: InputEvent) -> void:
 		_spawn_at(get_global_mouse_position())
 
 func _spawn_at(world_pos: Vector2) -> void:
-	# Usa la scena selezionata dall'inventario, altrimenti fallback a enemy_scene
 	var scene_to_spawn := _selected_scene if _selected_scene else enemy_scene
 	
 	if scene_to_spawn == null:
 		push_warning("Nessuna scena selezionata per lo spawn. Assegna enemy_scene o un inventario.")
 		return
 
+	var snapped_pos := Grid.snap_to_grid(world_pos)
+	var grid_pos := Grid.world_to_grid(snapped_pos)
+
+	if Grid.is_cell_occupied(grid_pos):
+		print("Cella già occupata: ", grid_pos)
+		return
+		
 	var entity := scene_to_spawn.instantiate()
-	# Se l'entità è un Node2D (o derivati), posizionalo
 	if entity is Node2D:
-		entity.global_position = world_pos
-	# Attacca al parent designato, altrimenti al nodo corrente
+		entity.global_position = snapped_pos
+		if not Grid.occupy_cell(grid_pos, entity):
+			entity.queue_free()
+			return
+	
 	if is_instance_valid(_spawn_parent):
 		_spawn_parent.add_child(entity)
 	else:
 		add_child(entity)
 
-	# Aggiungi al gruppo enemies se è un nemico (controlla se ha Health.is_enemy)
-	if add_to_enemies_group:
-		var health := entity.get_node_or_null("Health")
-		if health is HealthComponent and health.is_enemy:
-			entity.add_to_group("enemies")
-
-
 func _on_button_pressed() -> void:
 	Game.start_sim()
+
+func highlight_cell(grid_pos: Vector2i) -> void:
+	# show the current inventory item sprite at the given grid position half-transparent
+	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
+	if highlight_sprite == null:
+		highlight_sprite = Sprite2D.new()
+		highlight_sprite.name = "HighlightSprite"
+		add_child(highlight_sprite)
+	highlight_sprite.global_position = Grid.grid_to_world(grid_pos)
+	highlight_sprite.texture = _selected_sprite_texture
+	highlight_sprite.modulate = Color(1, 1, 1, 0.5) if !Grid.is_cell_occupied(grid_pos) else Color(1, 0, 0, 0.5)

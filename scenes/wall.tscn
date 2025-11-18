@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://udb7fyvpr5j"]
 
-[ext_resource type="Texture2D" uid="uid://dpvi1o10yorqe" path="res://art/sprites/inv_cube.png" id="1_wykyb"]
+[ext_resource type="Texture2D" uid="uid://dq6m31f8uda7m" path="res://art/sprites/brick_wall.png" id="1_wykyb"]
 
 [node name="Wall" type="Node2D" groups=["obstacles"]]
 metadata/_edit_horizontal_guides_ = [-20.0]
@@ -9,6 +9,5 @@ metadata/_edit_horizontal_guides_ = [-20.0]
 texture = ExtResource("1_wykyb")
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
-radius = 10.0
-vertices = PackedVector2Array(-7, -7, -7, 8, 8, 8, 8, -7)
+vertices = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 affect_navigation_mesh = true
