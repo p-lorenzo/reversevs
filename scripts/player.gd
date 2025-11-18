@@ -22,7 +22,9 @@ func _ready() -> void:
 		_selected_scene = enemy_scene
 
 func _process(_delta: float) -> void:
-	if !Game.is_plan_phase(): return
+	if !Game.is_plan_phase(): 
+		hide_highlight()
+		return	
 	var mouse_pos := get_global_mouse_position()
 	var grid_pos := Grid.world_to_grid(Grid.snap_to_grid(mouse_pos))
 	highlight_cell(grid_pos)
@@ -45,10 +47,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if enabled_in_plan_only and (typeof(Game) != TYPE_NIL) and not Game.is_plan_phase():
 		return
 
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
 		_spawn_at(get_global_mouse_position())
 		
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_RIGHT:
 		_delete_at(get_global_mouse_position())
 
 func _spawn_at(world_pos: Vector2) -> void:
@@ -103,3 +105,8 @@ func highlight_cell(grid_pos: Vector2i) -> void:
 	highlight_sprite.global_position = Grid.grid_to_world(grid_pos)
 	highlight_sprite.texture = _selected_sprite_texture
 	highlight_sprite.modulate = Color(1, 1, 1, 0.5) if !Grid.is_cell_occupied(grid_pos) else Color(1, 0, 0, 0.5)
+	
+func hide_highlight() -> void:
+	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
+	if highlight_sprite != null:
+		highlight_sprite.queue_free()
