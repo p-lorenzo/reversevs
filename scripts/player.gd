@@ -47,6 +47,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_spawn_at(get_global_mouse_position())
+		
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		_delete_at(get_global_mouse_position())
 
 func _spawn_at(world_pos: Vector2) -> void:
 	var scene_to_spawn := _selected_scene if _selected_scene else enemy_scene
@@ -73,6 +76,19 @@ func _spawn_at(world_pos: Vector2) -> void:
 		_spawn_parent.add_child(entity)
 	else:
 		add_child(entity)
+
+func _delete_at(world_pos: Vector2) -> void:
+	var snapped_pos := Grid.snap_to_grid(world_pos)
+	var grid_pos := Grid.world_to_grid(snapped_pos)
+
+	if not Grid.is_cell_occupied(grid_pos):
+		print("Nessuna entità da eliminare nella cella: ", grid_pos)
+		return
+
+	var entity = Grid._occupied_cells[grid_pos]
+	if entity and is_instance_valid(entity):
+		entity.queue_free()
+		Grid._occupied_cells.erase(grid_pos)
 
 func _on_button_pressed() -> void:
 	Game.start_sim()
