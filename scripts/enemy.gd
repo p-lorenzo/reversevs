@@ -25,36 +25,39 @@ func _physics_state(delta: float, current_state: int) -> void:
 
 	match current_state:
 		States.IDLE:
-			velocity = Vector2.ZERO
-			nav_agent.set_target_position(global_position)
-			if animated_sprite_2d:
-				animated_sprite_2d.play("idle")
+			_stay_put()
 
 		States.CHASE:
 			if not is_instance_valid(hero):
-				velocity = Vector2.ZERO
-				nav_agent.set_target_position(global_position)
-				if animated_sprite_2d:
-					animated_sprite_2d.play("idle")
+				_stay_put()
 				return
 
-			nav_agent.set_target_position(hero.global_position)
-			var next_pos := nav_agent.get_next_path_position()
-			velocity = (next_pos - global_position).normalized() * speed
-			if animated_sprite_2d:
-				animated_sprite_2d.play("walk")
+			_set_target(hero)
 
 		States.ATTACK:
-			velocity = Vector2.ZERO
-			nav_agent.set_target_position(global_position)
-			if animated_sprite_2d:
-				animated_sprite_2d.play("attack")
+			_stay_put()
 
 			if _attack_timer <= 0.0:
 				_perform_attack()
 				_attack_timer = attack_cooldown
 	
 	move_and_slide()
+	
+func _stay_put() -> void:
+	velocity = Vector2.ZERO
+	nav_agent.set_target_position(global_position)
+	nav_agent.set_velocity(Vector2.ZERO)
+	if animated_sprite_2d:
+		animated_sprite_2d.play("idle")
+
+func _set_target(target: Node2D) -> void:
+	var next_pos: Vector2 = global_position
+	if is_instance_valid(target):
+		nav_agent.set_target_position(target.global_position)
+		next_pos = nav_agent.get_next_path_position()
+	velocity = (next_pos - global_position).normalized() * speed
+	if animated_sprite_2d:
+		animated_sprite_2d.play("walk")
 
 func _query_next_state(current_state: int, delta: float) -> int:
 	match current_state:
