@@ -42,17 +42,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if enabled_in_plan_only and (typeof(Game) != TYPE_NIL) and not Game.is_plan_phase():
 		return
-	# Mouse sinistro
+
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_spawn_at(get_global_mouse_position())
-	# Touch (mobile)
-	elif event is InputEventScreenTouch and event.pressed:
-		var pos = event.position
-		var world_pos = pos
-		var cam := get_viewport().get_camera_2d()
-		if cam:
-			world_pos = cam.screen_to_world(pos)
-		_spawn_at(world_pos)
 
 func _spawn_at(world_pos: Vector2) -> void:
 	# Usa la scena selezionata dall'inventario, altrimenti fallback a enemy_scene

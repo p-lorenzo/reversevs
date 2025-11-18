@@ -10,6 +10,8 @@ var hero: Node2D = null
 var enemies_alive_at_sim_start: int = 0
 var remaining_enemies: int = 0
 
+var nav_region: NavigationRegion2D
+
 func get_phase_name(p: int = phase) -> String:
 	match p:
 		Phase.PLAN:
@@ -23,6 +25,7 @@ func get_phase_name(p: int = phase) -> String:
 	return str(p)
 
 func _ready() -> void:
+	_refresh_nav_region()
 	_refresh_hero()
 	for c in get_tree().get_nodes_in_group("castle"):
 		if c.has_signal("body_entered"):
@@ -45,6 +48,7 @@ func start_plan() -> void:
 func start_sim() -> void:
 	if phase != Phase.PLAN:
 		return
+	nav_region.bake_navigation_polygon(false)
 	_refresh_hero()
 	enemies_alive_at_sim_start = 0
 	remaining_enemies = 0
@@ -78,6 +82,11 @@ func _refresh_hero() -> void:
 		var hc := hero.get_node_or_null("Health")
 		if hc and not hc.is_connected("died", Callable(self, "_on_hero_died")):
 			hc.connect("died", _on_hero_died)
+
+func _refresh_nav_region() -> void:
+	var nrs := get_tree().get_nodes_in_group("nav_region")
+	if nrs.size() > 0 and nrs[0] is NavigationRegion2D:
+		nav_region = nrs[0]
 
 func _on_hero_died() -> void:
 	if phase == Phase.SIM:

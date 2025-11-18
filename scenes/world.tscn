@@ -11,25 +11,26 @@
 [ext_resource type="Script" uid="uid://4qqn2bqxadvi" path="res://scenes/exp_label.gd" id="8_4mrxx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwgxs"]
-size = Vector2(10, 8)
+size = Vector2(40, 32)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_7r4gi"]
-vertices = PackedVector2Array(638.0781, -3.0078125, 640.90625, 321.03906, -1.9375, 323.95313, -0.046875, -3.9765625)
+vertices = PackedVector2Array(636, 324, 4, 324, 4, 4, 636, 4)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-10, -14, 648, -13, 651, 331, -12, 334)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, 0, 640, 0, 640, 328, 0, 328)])
+agent_radius = 4.0
 
 [node name="world" type="Node2D"]
 metadata/_edit_vertical_guides_ = [-175.0]
 
 [node name="Hero" parent="." instance=ExtResource("2_rwgxs")]
 z_index = 1
-position = Vector2(11, 308)
+position = Vector2(24, 304)
 
 [node name="BossCastle" type="Area2D" parent="." groups=["castle"]]
 position = Vector2(613, 21)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BossCastle"]
-position = Vector2(0, 9)
+position = Vector2(-1, 3)
 shape = SubResource("RectangleShape2D_rwgxs")
 
 [node name="Sprite2D" type="Sprite2D" parent="BossCastle"]
@@ -38,7 +39,7 @@ texture = ExtResource("2_71j4m")
 [node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("spawn_parent_path")]
 script = ExtResource("3_k0juu")
 enemy_scene = ExtResource("3_4wyf3")
-spawn_parent_path = NodePath("../Enemies")
+spawn_parent_path = NodePath("../NavigationRegion2D")
 
 [node name="Enemies" type="Node2D" parent="."]
 position = Vector2(1, 0)
@@ -127,7 +128,7 @@ offset_bottom = 23.0
 theme = ExtResource("7_i7141")
 script = ExtResource("8_4mrxx")
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." groups=["nav_region"]]
 navigation_polygon = SubResource("NavigationPolygon_7r4gi")
 
 [connection signal="pressed" from="CanvasLayer/Control/Button" to="Player" method="_on_button_pressed"]
