@@ -14,10 +14,10 @@
 size = Vector2(40, 32)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_7r4gi"]
-vertices = PackedVector2Array(636, 324, 4, 324, 4, 4, 636, 4)
+vertices = PackedVector2Array(630, 318, 10, 318, 10, 10, 630, 10)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 0, 640, 0, 640, 328, 0, 328)])
-agent_radius = 4.0
+agent_radius = 6.0
 
 [node name="world" type="Node2D"]
 metadata/_edit_vertical_guides_ = [-175.0]
@@ -25,7 +25,7 @@ metadata/_edit_vertical_guides_ = [-175.0]
 [node name="Hero" parent="." instance=ExtResource("2_rwgxs")]
 z_index = 1
 position = Vector2(24, 304)
-speed = 100.0
+speed = 10.0
 
 [node name="BossCastle" type="Area2D" parent="." groups=["castle"]]
 position = Vector2(613, 21)
