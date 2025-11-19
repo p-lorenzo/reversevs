@@ -84,9 +84,12 @@ func _spawn_at(world_pos: Vector2) -> void:
 	if scene_to_spawn == null:
 		push_warning("Nessuna scena selezionata per lo spawn. Assegna enemy_scene o un inventario.")
 		return
-
 	var snapped_pos := Grid.snap_to_grid(world_pos)
 	var grid_pos := Grid.world_to_grid(snapped_pos)
+
+	if not Grid.is_world_position_spawnable(snapped_pos):
+		print("Area HUD non disponibile per lo spawn: ", snapped_pos)
+		return
 
 	if Grid.is_cell_occupied(grid_pos):
 		print("Cella già occupata: ", grid_pos)
@@ -129,9 +132,11 @@ func highlight_cell(grid_pos: Vector2i) -> void:
 		highlight_sprite = Sprite2D.new()
 		highlight_sprite.name = "HighlightSprite"
 		add_child(highlight_sprite)
-	highlight_sprite.global_position = Grid.grid_to_world(grid_pos)
+	var cell_world_pos := Grid.grid_to_world(grid_pos)
+	highlight_sprite.global_position = cell_world_pos
 	highlight_sprite.texture = _selected_sprite_texture
-	highlight_sprite.modulate = Color(1, 1, 1, 0.5) if !Grid.is_cell_occupied(grid_pos) else Color(1, 0, 0, 0.5)
+	var can_spawn_here := Grid.is_world_position_spawnable(cell_world_pos) and !Grid.is_cell_occupied(grid_pos)
+	highlight_sprite.modulate = Color(1, 1, 1, 0.5) if can_spawn_here else Color(1, 0, 0, 0.5)
 	
 func hide_highlight() -> void:
 	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")

@@ -14,9 +14,9 @@
 size = Vector2(40, 32)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_7r4gi"]
-vertices = PackedVector2Array(630, 318, 10, 318, 10, 10, 630, 10)
+vertices = PackedVector2Array(633, 305, 7, 305, 7, 7, 633, 7)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(0, 0, 640, 0, 640, 328, 0, 328)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, 0, 640, 0, 640, 312, 0, 312)])
 agent_radius = 7.0
 
 [node name="world" type="Node2D"]
@@ -24,7 +24,7 @@ metadata/_edit_vertical_guides_ = [-175.0]
 
 [node name="Hero" parent="." instance=ExtResource("2_rwgxs")]
 z_index = 1
-position = Vector2(24, 304)
+position = Vector2(24, 288)
 speed = 10.0
 
 [node name="BossCastle" type="Area2D" parent="." groups=["castle"]]
@@ -46,6 +46,11 @@ spawn_parent_path = NodePath("../NavigationRegion2D")
 position = Vector2(1, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="CanvasLayer"]
+position = Vector2(0, 312)
+color = Color(0, 0, 0, 0.27058825)
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 48, 0, 48)
 
 [node name="CenterTop" type="Control" parent="CanvasLayer"]
 layout_mode = 3

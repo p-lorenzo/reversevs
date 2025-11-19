@@ -1,6 +1,7 @@
 ﻿extends Node
 
 const GRID_SIZE: int = 16
+const HUD_EXCLUSION_HEIGHT: int = 48
 var _occupied_cells: Dictionary = {}
 
 func world_to_grid(world_pos: Vector2) -> Vector2i:
@@ -28,6 +29,8 @@ func _is_entity_static(entity: Node) -> bool:
 func occupy_cell(grid_pos: Vector2i, entity: Node2D) -> bool:
 	if is_cell_occupied(grid_pos):
 		return false
+	if not is_grid_position_spawnable(grid_pos):
+		return false
 	_occupied_cells[grid_pos] = entity
 	return true
 
@@ -40,4 +43,14 @@ func free_mobile_entities_cells() -> void:
 	
 	for grid_pos in cells_to_free:
 		_occupied_cells.erase(grid_pos)
+
+func is_world_position_spawnable(world_pos: Vector2) -> bool:
+	return world_pos.y < _get_bottom_spawn_limit()
+
+func is_grid_position_spawnable(grid_pos: Vector2i) -> bool:
+	return is_world_position_spawnable(grid_to_world(grid_pos))
+
+func _get_bottom_spawn_limit() -> float:
+	var viewport_height := float(ProjectSettings.get_setting("display/window/size/viewport_height", 0))
+	return viewport_height - HUD_EXCLUSION_HEIGHT
 
