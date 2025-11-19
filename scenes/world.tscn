@@ -52,6 +52,11 @@ position = Vector2(0, 312)
 color = Color(0, 0, 0, 0.27058825)
 polygon = PackedVector2Array(0, 0, 640, 0, 640, 48, 0, 48)
 
+[node name="Polygon2D2" type="Polygon2D" parent="CanvasLayer"]
+position = Vector2(0, 304)
+color = Color(0, 0, 0, 0.4392157)
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 8, 0, 8)
+
 [node name="CenterTop" type="Control" parent="CanvasLayer"]
 layout_mode = 3
 anchors_preset = 5
