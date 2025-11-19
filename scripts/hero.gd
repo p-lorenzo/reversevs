@@ -1,4 +1,5 @@
 extends NPCStateMachineBody2D
+class_name Hero
 
 enum States { MOVE_TO_CASTLE, CHASE_ENEMY, ATTACK, IDLE, CASTLE_REACHED }
 
