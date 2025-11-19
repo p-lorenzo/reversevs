@@ -154,3 +154,7 @@ func _on_castle_body_entered(body: Node) -> void:
 
 func _on_health_died() -> void:
 	queue_free()
+	
+func reset_target() -> void:
+	if is_instance_valid(default_target):
+		nav_agent.set_target_position(default_target.global_position)

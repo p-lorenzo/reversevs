@@ -39,6 +39,7 @@ func is_simulation_active() -> bool:
 func start_plan() -> void:
 	if phase == Phase.PLAN:
 		return
+	hero.reset_target()
 	phase = Phase.PLAN
 	phase_changed.emit(phase)
 	enemies_alive_at_sim_start = 0
