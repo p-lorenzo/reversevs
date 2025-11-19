@@ -1,13 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://udb7fyvpr5j"]
+[gd_scene load_steps=3 format=3 uid="uid://udb7fyvpr5j"]
 
 [ext_resource type="Texture2D" uid="uid://dq6m31f8uda7m" path="res://art/sprites/brick_wall.png" id="1_wykyb"]
 
-[node name="Wall" type="Node2D" groups=["obstacles"]]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wykyb"]
+size = Vector2(16, 16)
+
+[node name="Wall" type="StaticBody2D" groups=["obstacles"]]
 metadata/_edit_horizontal_guides_ = [-20.0]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_wykyb")
 
-[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
-vertices = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
-affect_navigation_mesh = true
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(1, 1, 1, 0)
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wykyb")

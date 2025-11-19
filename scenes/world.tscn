@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://beb2370gitmgw"]
+[gd_scene load_steps=13 format=3 uid="uid://beb2370gitmgw"]
 
 [ext_resource type="Texture2D" uid="uid://cr1upaw0lkltc" path="res://art/sprites/castle.png" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
@@ -17,7 +17,7 @@ size = Vector2(40, 32)
 vertices = PackedVector2Array(630, 318, 10, 318, 10, 10, 630, 10)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 0, 640, 0, 640, 328, 0, 328)])
-agent_radius = 6.0
+agent_radius = 7.0
 
 [node name="world" type="Node2D"]
 metadata/_edit_vertical_guides_ = [-175.0]
