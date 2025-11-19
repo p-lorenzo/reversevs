@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Game="*res://scripts/game.gd"
 ExperienceSystem="*res://scripts/experience_system.gd"
 Grid="*res://scripts/grid.gd"
+Threat="*res://scripts/threat.gd"
 
 [display]
 

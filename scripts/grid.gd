@@ -1,4 +1,8 @@
-﻿extends Node
+extends Node
+
+class GridElement:
+	var entity: Node
+	var threat_modifier: int
 
 const GRID_SIZE: int = 16
 const HUD_EXCLUSION_HEIGHT: int = 48
@@ -26,18 +30,21 @@ func is_cell_occupied(grid_pos: Vector2i) -> bool:
 func _is_entity_static(entity: Node) -> bool:
 	return entity.is_in_group("obstacles")
 
-func occupy_cell(grid_pos: Vector2i, entity: Node2D) -> bool:
+func occupy_cell(grid_pos: Vector2i, entity: Node2D, threat_modifier: int) -> bool:
 	if is_cell_occupied(grid_pos):
 		return false
 	if not is_grid_position_spawnable(grid_pos):
 		return false
-	_occupied_cells[grid_pos] = entity
+	var grid_element := GridElement.new()
+	grid_element.entity = entity
+	grid_element.threat_modifier = threat_modifier
+	_occupied_cells[grid_pos] = grid_element
 	return true
 
 func free_mobile_entities_cells() -> void:
 	var cells_to_free: Array[Vector2i] = []
 	for grid_pos in _occupied_cells.keys():
-		var entity = _occupied_cells[grid_pos]
+		var entity = _occupied_cells[grid_pos].entity
 		if entity and not _is_entity_static(entity):
 			cells_to_free.append(grid_pos)
 	
@@ -53,4 +60,3 @@ func is_grid_position_spawnable(grid_pos: Vector2i) -> bool:
 func _get_bottom_spawn_limit() -> float:
 	var viewport_height := float(ProjectSettings.get_setting("display/window/size/viewport_height", 0))
 	return viewport_height - HUD_EXCLUSION_HEIGHT
-

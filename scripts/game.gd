@@ -3,6 +3,7 @@ extends Node
 enum Phase { PLAN, SIM, CASTLE_REACHED, HERO_DIED }
 signal phase_changed(new_phase: int)
 
+var wave_round: int = 0
 var phase: int = Phase.PLAN
 var hero: Node2D = null
 
@@ -29,6 +30,9 @@ func _ready() -> void:
 	for c in get_tree().get_nodes_in_group("castle"):
 		if c.has_signal("body_entered"):
 			c.connect("body_entered", _on_castle_body_entered)
+	for b in get_tree().get_nodes_in_group("wave_button"):
+		if b.has_method("update_button_state"):
+			b.call("update_button_state")
 
 func is_plan_phase() -> bool:
 	return phase == Phase.PLAN
@@ -40,13 +44,18 @@ func start_plan() -> void:
 	if phase == Phase.PLAN:
 		return
 	hero.reset_target()
+	print("Starting planning phase for wave %d" % wave_round)
 	phase = Phase.PLAN
 	phase_changed.emit(phase)
 	enemies_alive_at_sim_start = 0
 	remaining_enemies = 0
+	wave_round += 1
+	Threat.reset_threat()
 
 func start_sim() -> void:
 	if phase != Phase.PLAN:
+		return
+	if !Threat.is_threat_high_enough_to_start_wave(wave_round):
 		return
 	nav_region.bake_navigation_polygon(false)
 	_refresh_hero()
@@ -71,9 +80,9 @@ func _on_enemy_died() -> void:
 		return
 	remaining_enemies = max(remaining_enemies - 1, 0)
 	if enemies_alive_at_sim_start > 0 and remaining_enemies == 0:
-		_end_simulation("all_enemies_defeated")
+		_end_simulation()
 
-func _end_simulation(reason: String) -> void:
+func _end_simulation() -> void:
 	start_plan()
 
 func _refresh_hero() -> void:

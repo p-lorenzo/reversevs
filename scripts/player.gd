@@ -9,8 +9,10 @@ class_name SpawnerOnClick
 var _spawn_parent: Node = null
 var _selected_scene: PackedScene = null
 var _selected_sprite_texture: Texture2D = null
+var _selected_threat_modifier: int = 0
 var _last_spawned_entity: Node2D = null
 var _last_occupied_cell: Vector2i = Vector2i.ZERO
+var _last_threat_modifier: int = 0
 var _hero: Hero = null
 var _nav_region: NavigationRegion2D = null
 
@@ -37,6 +39,7 @@ func _process(_delta: float) -> void:
 	if !_hero.nav_agent.is_target_reachable() and Grid.is_cell_occupied(_last_occupied_cell) and is_instance_valid(_last_spawned_entity):
 		_last_spawned_entity.queue_free()
 		Grid._occupied_cells.erase(_last_occupied_cell)
+		Threat.undo_spawn_entity(_last_threat_modifier)
 	if !_hero.nav_agent.is_target_reachable():
 		_nav_region.bake_navigation_polygon(false)
 
@@ -61,9 +64,10 @@ func _find_nav_region() -> void:
 	if nav_regions.size() > 0 and nav_regions[0] is NavigationRegion2D:
 		_nav_region = nav_regions[0]
 
-func _on_inventory_selection_changed(selected_index: int, selected_inventory_item: InventoryItem) -> void:
+func _on_inventory_selection_changed(_selected_index: int, selected_inventory_item: InventoryItem) -> void:
 	_selected_scene = selected_inventory_item.entity_scene
 	_selected_sprite_texture = selected_inventory_item.icon
+	_selected_threat_modifier = selected_inventory_item.threat_modifier
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
@@ -98,9 +102,12 @@ func _spawn_at(world_pos: Vector2) -> void:
 	var entity := scene_to_spawn.instantiate()
 	if entity is Node2D:
 		entity.global_position = snapped_pos
-		if not Grid.occupy_cell(grid_pos, entity):
+		if not Grid.occupy_cell(grid_pos, entity, _selected_threat_modifier):
 			entity.queue_free()
 			return
+	
+	if !Threat.try_spawn_entity(_selected_threat_modifier):
+		return
 	
 	if is_instance_valid(_spawn_parent):
 		_spawn_parent.add_child(entity)
@@ -109,6 +116,7 @@ func _spawn_at(world_pos: Vector2) -> void:
 	_nav_region.bake_navigation_polygon(false)	
 	_last_spawned_entity = entity
 	_last_occupied_cell = grid_pos
+	_last_threat_modifier = _selected_threat_modifier
 
 func _delete_at(world_pos: Vector2) -> void:
 	var snapped_pos := Grid.snap_to_grid(world_pos)
@@ -118,10 +126,12 @@ func _delete_at(world_pos: Vector2) -> void:
 		print("Nessuna entità da eliminare nella cella: ", grid_pos)
 		return
 
-	var entity = Grid._occupied_cells[grid_pos]
-	if entity and is_instance_valid(entity):
-		entity.queue_free()
+	var grid_element = Grid._occupied_cells[grid_pos]
+	if grid_element and is_instance_valid(grid_element.entity):
+		grid_element.entity.queue_free()
+		Threat.undo_spawn_entity(grid_element.threat_modifier)
 		Grid._occupied_cells.erase(grid_pos)
+		
 
 func _on_button_pressed() -> void:
 	Game.start_sim()

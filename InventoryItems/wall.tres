@@ -8,4 +8,4 @@
 script = ExtResource("3_g4rsj")
 entity_scene = ExtResource("1_b0drq")
 icon = ExtResource("2_b0drq")
-cost = 1
+threat_modifier = -3

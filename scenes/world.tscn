@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://beb2370gitmgw"]
+[gd_scene load_steps=13 format=3 uid="uid://beb2370gitmgw"]
 
 [ext_resource type="Texture2D" uid="uid://cr1upaw0lkltc" path="res://art/sprites/castle.png" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cclv64l4lj4gt" path="res://scenes/hud/hearts.tscn" id="6_qfnet"]
 [ext_resource type="Theme" uid="uid://d22t3t8dknlxk" path="res://resources/themes/theme.tres" id="7_i7141"]
 [ext_resource type="Script" uid="uid://4qqn2bqxadvi" path="res://scenes/exp_label.gd" id="8_4mrxx"]
+[ext_resource type="Script" uid="uid://bc546l332uf4w" path="res://scripts/wave_button.gd" id="9_w7kh3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rwgxs"]
 size = Vector2(40, 32)
@@ -110,7 +111,7 @@ offset_bottom = -9.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Button" type="Button" parent="CanvasLayer/Control"]
+[node name="Button" type="Button" parent="CanvasLayer/Control" groups=["wave_button"]]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -123,6 +124,7 @@ grow_horizontal = 0
 grow_vertical = 0
 theme = ExtResource("7_i7141")
 text = "START WAVE"
+script = ExtResource("9_w7kh3")
 
 [node name="TopLeft" type="Control" parent="CanvasLayer"]
 layout_mode = 3
