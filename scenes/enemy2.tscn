@@ -87,7 +87,7 @@ max_health = 1
 scale = Vector2(3, 3)
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 0.1
 target_desired_distance = 20.0
-avoidance_enabled = true
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]

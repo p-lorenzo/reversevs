@@ -23,7 +23,6 @@ func _ready() -> void:
 	if nav_agent:
 		nav_agent.avoidance_enabled = true
 		nav_agent.set_target_position(default_target.global_position)
-		nav_agent.path_desired_distance = attack_range
 		nav_agent.target_desired_distance = attack_range
 	super._ready()
 
