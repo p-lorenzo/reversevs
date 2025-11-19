@@ -5,8 +5,9 @@
 [ext_resource type="Script" uid="uid://b76c7yacwtbu4" path="res://scripts/health_system.gd" id="3_lsk8u"]
 [ext_resource type="PackedScene" uid="uid://w4w7u6dy3xn6" path="res://scenes/particles/slash.tscn" id="4_thqno"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
-size = Vector2(10, 10)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_23kvp"]
+radius = 6.5
+height = 15.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_thqno"]
 atlas = ExtResource("2_lsk8u")
@@ -71,7 +72,7 @@ script = ExtResource("1_23kvp")
 metadata/_edit_horizontal_guides_ = [-20.0]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_7p1mj")
+shape = SubResource("CapsuleShape2D_23kvp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_xwavj")
@@ -89,5 +90,6 @@ scale = Vector2(3, 3)
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 0.1
 target_desired_distance = 20.0
+debug_enabled = true
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]

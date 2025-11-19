@@ -88,5 +88,7 @@ path_desired_distance = 0.1
 target_desired_distance = 20.0
 path_max_distance = 10.0
 debug_enabled = true
+debug_use_custom = true
+debug_path_custom_color = Color(0, 1, 1, 1)
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]
