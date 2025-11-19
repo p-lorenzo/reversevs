@@ -37,7 +37,8 @@ func _process(_delta: float) -> void:
 	if !_hero.nav_agent.is_target_reachable() and Grid.is_cell_occupied(_last_occupied_cell) and is_instance_valid(_last_spawned_entity):
 		_last_spawned_entity.queue_free()
 		Grid._occupied_cells.erase(_last_occupied_cell)
-		_nav_region.bake_navigation_polygon(true)
+	if !_hero.nav_agent.is_target_reachable():
+		_nav_region.bake_navigation_polygon(false)
 
 func _find_inventory() -> void:
 	if inventory:
@@ -102,7 +103,7 @@ func _spawn_at(world_pos: Vector2) -> void:
 		_spawn_parent.add_child(entity)
 	else:
 		add_child(entity)
-	_nav_region.bake_navigation_polygon(true)	
+	_nav_region.bake_navigation_polygon(false)	
 	_last_spawned_entity = entity
 	_last_occupied_cell = grid_pos
 
