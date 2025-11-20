@@ -7,6 +7,7 @@ enum States { MOVE_TO_CASTLE, CHASE_ENEMY, ATTACK, IDLE, CASTLE_REACHED }
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 @onready var slash_particle: Node2D = $slash
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
+@onready var hit_area: Area2D = $HitArea
 
 @export var speed: float = 250.0
 @export var aggro_range: float = 200.0
@@ -132,9 +133,11 @@ func _query_next_state(current_state: int, _delta: float) -> int:
 func _perform_attack(target_enemy: Node2D) -> void:
 	slash_particle.look_at(target_enemy.global_position)
 	slash_particle.get_child(0).emitting = true
-	var hc := target_enemy.get_node_or_null("Health")
-	if hc and hc.has_method("take_damage"):
-		hc.take_damage(1)
+	for body in hit_area.get_overlapping_bodies():
+		print(body)
+		var hc := body.get_node_or_null("Health")
+		if hc and hc.has_method("take_damage"):
+			hc.take_damage(1)
 
 func _get_nearest_enemy_in_range(search_range: float) -> Node2D:
 	var nearest: Node2D = null

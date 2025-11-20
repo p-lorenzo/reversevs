@@ -68,6 +68,7 @@ animations = [{
 
 [node name="Hero" type="CharacterBody2D" groups=["hero"]]
 script = ExtResource("1_yvbpl")
+attack_range = 40.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_mv13s")
@@ -90,5 +91,12 @@ path_max_distance = 10.0
 debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(0, 1, 1, 1)
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitArea"]
+position = Vector2(8, 0)
+polygon = PackedVector2Array(-8, 0, -8, -32, 16, -24, 32, 0, 16, 24, -8, 32)
 
 [connection signal="died" from="Health" to="." method="_on_health_died"]
