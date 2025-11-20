@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="InventoryItem" load_steps=4 format=3 uid="uid://dkp4rsjg6ack7"]
+
+[ext_resource type="PackedScene" uid="uid://ckvr48vhfdoro" path="res://scenes/heal.tscn" id="1_3c305"]
+[ext_resource type="Texture2D" uid="uid://d0brwdurwe114" path="res://art/sprites/heart.png" id="2_3c305"]
+[ext_resource type="Script" uid="uid://do1haxjgysstf" path="res://scripts/inventory_item.gd" id="3_ch0wv"]
+
+[resource]
+script = ExtResource("3_ch0wv")
+entity_scene = ExtResource("1_3c305")
+icon = ExtResource("2_3c305")
+threat_modifier = -3
