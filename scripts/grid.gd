@@ -31,6 +31,7 @@ func _is_entity_static(entity: Node) -> bool:
 	return entity.is_in_group("obstacles")
 
 func occupy_cell(grid_pos: Vector2i, entity: Node2D, threat_modifier: int) -> bool:
+	if !_is_entity_static(entity): return true
 	if is_cell_occupied(grid_pos):
 		return false
 	if not is_grid_position_spawnable(grid_pos):

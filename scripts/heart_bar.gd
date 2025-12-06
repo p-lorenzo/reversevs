@@ -19,15 +19,6 @@ func _ready() -> void:
 		if hs.size() > 0 and hs[0] is Node2D:
 			_bind_to_hero(hs[0])
 
-	# Se Game cambia eroe (respawn), potresti voler ricollegare:
-	if typeof(Game) != TYPE_NIL and not Game.phase_changed.is_connected(_on_phase_changed):
-		Game.phase_changed.connect(_on_phase_changed)
-
-func _on_phase_changed(_p: int) -> void:
-	# Ricontrolla l'eroe quando si entra in SIM (o esci), nel dubbio ricollega
-	if typeof(Game) != TYPE_NIL and Game.hero and Game.hero != _hero:
-		_bind_to_hero(Game.hero)
-
 func _bind_to_hero(hero: Node2D) -> void:
 	_hero = hero
 	_health = _hero.get_node_or_null("Health")

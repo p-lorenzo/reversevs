@@ -3,7 +3,6 @@ class_name SpawnerOnClick
 
 @export var enemy_scene: PackedScene
 @export var spawn_parent_path: Node
-@export var enabled_in_plan_only := true
 @export var inventory: Inventory
 
 var _spawn_parent: Node = null
@@ -30,9 +29,8 @@ func _ready() -> void:
 		_selected_scene = enemy_scene
 
 func _process(_delta: float) -> void:
-	if !Game.is_plan_phase(): 
-		hide_highlight()
-		return	
+	if !_hero: 
+		return
 	var mouse_pos := get_global_mouse_position()
 	var grid_pos := Grid.world_to_grid(Grid.snap_to_grid(mouse_pos))
 	highlight_cell(grid_pos)
@@ -70,12 +68,6 @@ func _on_inventory_selection_changed(_selected_index: int, selected_inventory_it
 	_selected_threat_modifier = selected_inventory_item.threat_modifier
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_accept"):
-		Game.start_sim()
-
-	if enabled_in_plan_only and (typeof(Game) != TYPE_NIL) and not Game.is_plan_phase():
-		return
-
 	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
 		_spawn_at(get_global_mouse_position())
 		
@@ -83,6 +75,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_delete_at(get_global_mouse_position())
 
 func _spawn_at(world_pos: Vector2) -> void:
+	if !Threat.try_spawn_entity(_selected_threat_modifier): return
 	var scene_to_spawn := _selected_scene if _selected_scene else enemy_scene
 	
 	if scene_to_spawn == null:
@@ -105,9 +98,6 @@ func _spawn_at(world_pos: Vector2) -> void:
 		if not Grid.occupy_cell(grid_pos, entity, _selected_threat_modifier):
 			entity.queue_free()
 			return
-	
-	if !Threat.try_spawn_entity(_selected_threat_modifier):
-		return
 	
 	if is_instance_valid(_spawn_parent):
 		_spawn_parent.add_child(entity)
@@ -133,8 +123,6 @@ func _delete_at(world_pos: Vector2) -> void:
 		Grid._occupied_cells.erase(grid_pos)
 		
 
-func _on_button_pressed() -> void:
-	Game.start_sim()
 
 func highlight_cell(grid_pos: Vector2i) -> void:
 	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
