@@ -79,7 +79,6 @@ animation = &"idle"
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("3_06baw")
-max_health = 10
 
 [node name="slash" parent="." instance=ExtResource("4_mv13s")]
 scale = Vector2(3, 3)
@@ -88,7 +87,6 @@ scale = Vector2(3, 3)
 path_desired_distance = 0.1
 target_desired_distance = 20.0
 path_max_distance = 10.0
-debug_enabled = true
 debug_use_custom = true
 debug_path_custom_color = Color(0, 1, 1, 1)
 

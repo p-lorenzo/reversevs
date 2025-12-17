@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://beb2370gitmgw"]
+[gd_scene load_steps=10 format=3 uid="uid://beb2370gitmgw"]
 
 [ext_resource type="Texture2D" uid="uid://cr1upaw0lkltc" path="res://art/sprites/castle.png" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://b22drsgl0fpi" path="res://scenes/hero.tscn" id="2_rwgxs"]
-[ext_resource type="PackedScene" uid="uid://cc7gqs5d3ld4t" path="res://scenes/enemy.tscn" id="3_4wyf3"]
 [ext_resource type="Script" uid="uid://borem4ksvhkfm" path="res://scripts/player.gd" id="3_k0juu"]
+[ext_resource type="PackedScene" uid="uid://bvygckdmsayfh" path="res://scenes/hud/healthbar.tscn" id="5_i7141"]
 [ext_resource type="PackedScene" uid="uid://dxiw0ki0t5paw" path="res://scenes/hud/inventory.tscn" id="6_7r4gi"]
-[ext_resource type="PackedScene" uid="uid://cclv64l4lj4gt" path="res://scenes/hud/hearts.tscn" id="6_qfnet"]
 [ext_resource type="Theme" uid="uid://d22t3t8dknlxk" path="res://resources/themes/theme.tres" id="7_i7141"]
 [ext_resource type="Script" uid="uid://4qqn2bqxadvi" path="res://scenes/exp_label.gd" id="8_4mrxx"]
 
@@ -38,7 +37,6 @@ texture = ExtResource("2_71j4m")
 
 [node name="Player" type="Node2D" parent="." node_paths=PackedStringArray("spawn_parent_path")]
 script = ExtResource("3_k0juu")
-enemy_scene = ExtResource("3_4wyf3")
 spawn_parent_path = NodePath("../NavigationRegion2D")
 
 [node name="Enemies" type="Node2D" parent="."]
@@ -76,8 +74,12 @@ anchor_top = 1.0
 anchor_bottom = 1.0
 grow_vertical = 0
 
-[node name="Hearts" parent="CanvasLayer/BottomLeft" instance=ExtResource("6_qfnet")]
+[node name="Hearts" parent="CanvasLayer/BottomLeft" instance=ExtResource("5_i7141")]
 layout_mode = 1
+offset_left = 109.0
+offset_top = -24.0
+offset_right = 109.0
+offset_bottom = -24.0
 
 [node name="TopLeft" type="Control" parent="CanvasLayer"]
 layout_mode = 3

@@ -84,31 +84,6 @@ func _create_slot(index: int) -> Control:
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	container.add_child(overlay)
 	
-	var threat_bg := ColorRect.new()
-	threat_bg.name = "ThreatBackground"
-	threat_bg.color = Color(0.1, 0.1, 0.1, 0.55)
-	threat_bg.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT, true)
-	threat_bg.offset_left = -20
-	threat_bg.offset_top = -20
-	threat_bg.offset_right = -2
-	threat_bg.offset_bottom = -2
-	threat_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	threat_bg.visible = false
-	overlay.add_child(threat_bg)
-	
-	var threat_label := Label.new()
-	threat_label.name = "ThreatLabel"
-	threat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	threat_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	threat_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT, true)
-	threat_label.offset_left = -26
-	threat_label.offset_top = -20
-	threat_label.offset_right = -4
-	threat_label.offset_bottom = -4
-	threat_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	threat_label.add_theme_font_size_override("font_size", 12)
-	overlay.add_child(threat_label)
-	
 	# Imposta l'icona dall'InventoryItem se disponibile, altrimenti slot vuoto
 	if index < inventory_items.size() and inventory_items[index] != null:
 		var item: InventoryItem = inventory_items[index]
@@ -116,36 +91,17 @@ func _create_slot(index: int) -> Control:
 			icon_rect.texture = item.icon
 		elif empty_slot_texture:
 			icon_rect.texture = empty_slot_texture
-		
-		_update_threat_label(threat_label, threat_bg, item.threat_modifier)
 	else:
 		# Slot vuoto
 		if empty_slot_texture:
 			icon_rect.texture = empty_slot_texture
-		threat_bg.visible = false
-		threat_label.visible = false
-	
+
 	inner.add_child(icon_rect)
 	
 	# Salva l'indice come metadata per il click
 	container.set_meta("slot_index", index)
 	
 	return container
-
-func _update_threat_label(label: Label, bg: ColorRect, modifier: int) -> void:
-	if modifier == 0:
-		label.visible = false
-		bg.visible = false
-		return
-	
-	label.visible = true
-	bg.visible = true
-	var prefix := "+" if modifier > 0 else ""
-	label.text = "%s%d" % [prefix, modifier]
-	
-	var positive_color := Color(0.3, 0.9, 0.3, 1.0)
-	var negative_color := Color(1.0, 0.3, 0.3, 1.0)
-	label.add_theme_color_override("font_color", positive_color if modifier > 0 else negative_color)
 
 func _clear_slots() -> void:
 	for slot in _slots:
@@ -155,7 +111,6 @@ func _clear_slots() -> void:
 	_slots.clear()
 
 func _handle_slot_click(_mouse_pos: Vector2) -> void:
-	# Converti posizione mouse in coordinate locali del container
 	var local_pos := get_global_mouse_position() - global_position
 	
 	for i in range(_slots.size()):
@@ -186,7 +141,6 @@ func select_slot(index: int) -> void:
 			if style_box:
 				style_box.border_color = Color(0.5, 0.5, 0.5, 1.0)  # Bordo grigio
 	
-	# Emetti segnale
 	var selected_inventory_item: InventoryItem = null
 	if selected_index >= 0 and selected_index < inventory_items.size():
 		var item: InventoryItem = inventory_items[selected_index]
@@ -212,12 +166,3 @@ func get_selected_scene() -> PackedScene:
 		if item:
 			return item.entity_scene
 	return null
-
-func get_selected_item() -> InventoryItem:
-	if selected_index >= 0 and selected_index < inventory_items.size():
-		return inventory_items[selected_index]
-	return null
-
-func set_inventory_items(items: Array[InventoryItem]) -> void:
-	inventory_items = items
-	rebuild_inventory()

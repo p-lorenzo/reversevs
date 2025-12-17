@@ -1,12 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dxiw0ki0t5paw"]
+[gd_scene load_steps=6 format=3 uid="uid://dxiw0ki0t5paw"]
 
 [ext_resource type="Script" uid="uid://besipr5mn41jl" path="res://scripts/inventory.gd" id="1_ysfw5"]
 [ext_resource type="Texture2D" uid="uid://dpvi1o10yorqe" path="res://art/sprites/inv_cube.png" id="2_rjovj"]
 [ext_resource type="Script" uid="uid://do1haxjgysstf" path="res://scripts/inventory_item.gd" id="3_rjovj"]
 [ext_resource type="Resource" uid="uid://blu2q2pmtpguq" path="res://InventoryItems/enemy.tres" id="4_3wkw2"]
 [ext_resource type="Resource" uid="uid://cqmnuq4gs87mk" path="res://InventoryItems/enemy2.tres" id="5_k728j"]
-[ext_resource type="Resource" uid="uid://dkp4rsjg6ack7" path="res://InventoryItems/heal.tres" id="7_f1ufk"]
-[ext_resource type="Resource" uid="uid://kcs7gp1p2g4r" path="res://InventoryItems/wall.tres" id="7_fuj1y"]
 
 [node name="Inventory" type="Control"]
 layout_mode = 3
@@ -29,4 +27,4 @@ grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("1_ysfw5")
 empty_slot_texture = ExtResource("2_rjovj")
-inventory_items = Array[ExtResource("3_rjovj")]([ExtResource("4_3wkw2"), ExtResource("5_k728j"), ExtResource("7_fuj1y"), ExtResource("7_f1ufk")])
+inventory_items = Array[ExtResource("3_rjovj")]([ExtResource("5_k728j"), ExtResource("4_3wkw2")])

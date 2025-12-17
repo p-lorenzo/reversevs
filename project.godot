@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="reversevs"
+config/name="untithed"
 run/main_scene="uid://beb2370gitmgw"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
@@ -19,8 +19,6 @@ config/icon="res://icon.svg"
 
 Game="*res://scripts/game.gd"
 ExperienceSystem="*res://scripts/experience_system.gd"
-Grid="*res://scripts/grid.gd"
-Threat="*res://scripts/threat.gd"
 
 [display]
 
@@ -34,7 +32,7 @@ project/assembly_name="reversevs"
 
 [feature_flags]
 
-show_state_labels=true
+show_state_labels=false
 
 [rendering]
 

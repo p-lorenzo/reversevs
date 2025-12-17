@@ -132,6 +132,7 @@ func _query_next_state(current_state: int, _delta: float) -> int:
 
 func _perform_attack(target_enemy: Node2D) -> void:
 	slash_particle.look_at(target_enemy.global_position)
+	hit_area.look_at(target_enemy.global_position)
 	slash_particle.get_child(0).emitting = true
 	for body in hit_area.get_overlapping_bodies():
 		print(body)

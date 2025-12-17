@@ -1,19 +1,18 @@
 extends Node2D
 class_name SpawnerOnClick
 
-@export var enemy_scene: PackedScene
 @export var spawn_parent_path: Node
 @export var inventory: Inventory
 
 var _spawn_parent: Node = null
 var _selected_scene: PackedScene = null
 var _selected_sprite_texture: Texture2D = null
-var _selected_threat_modifier: int = 0
 var _last_spawned_entity: Node2D = null
-var _last_occupied_cell: Vector2i = Vector2i.ZERO
-var _last_threat_modifier: int = 0
 var _hero: Hero = null
 var _nav_region: NavigationRegion2D = null
+var _is_pressing := false
+var _spawn_cooldown := 0.3
+var _current_cooldown := 0.0
 
 func _ready() -> void:
 	_spawn_parent = spawn_parent_path
@@ -25,21 +24,18 @@ func _ready() -> void:
 		if not inventory.selection_changed.is_connected(_on_inventory_selection_changed):
 			inventory.selection_changed.connect(_on_inventory_selection_changed)
 		_selected_scene = inventory.get_selected_scene()
-	elif enemy_scene:
-		_selected_scene = enemy_scene
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if !_hero: 
 		return
-	var mouse_pos := get_global_mouse_position()
-	var grid_pos := Grid.world_to_grid(Grid.snap_to_grid(mouse_pos))
-	highlight_cell(grid_pos)
-	if !_hero.nav_agent.is_target_reachable() and Grid.is_cell_occupied(_last_occupied_cell) and is_instance_valid(_last_spawned_entity):
-		_last_spawned_entity.queue_free()
-		Grid._occupied_cells.erase(_last_occupied_cell)
-		Threat.undo_spawn_entity(_last_threat_modifier)
-	if !_hero.nav_agent.is_target_reachable():
-		_nav_region.bake_navigation_polygon(false)
+	_handle_spawning(delta)
+	
+
+func _handle_spawning(delta: float) -> void:
+	_current_cooldown -= delta;
+	if _is_pressing and _current_cooldown <= 0:
+		_spawn_at(get_global_mouse_position())
+		_current_cooldown = _spawn_cooldown
 
 func _find_inventory() -> void:
 	if inventory:
@@ -65,39 +61,22 @@ func _find_nav_region() -> void:
 func _on_inventory_selection_changed(_selected_index: int, selected_inventory_item: InventoryItem) -> void:
 	_selected_scene = selected_inventory_item.entity_scene
 	_selected_sprite_texture = selected_inventory_item.icon
-	_selected_threat_modifier = selected_inventory_item.threat_modifier
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+		_is_pressing = true
+	
 	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_LEFT:
-		_spawn_at(get_global_mouse_position())
-		
-	if event is InputEventMouseButton and event.is_released() and event.button_index == MOUSE_BUTTON_RIGHT:
-		_delete_at(get_global_mouse_position())
+		_is_pressing = false
 
 func _spawn_at(world_pos: Vector2) -> void:
-	if !Threat.try_spawn_entity(_selected_threat_modifier): return
-	var scene_to_spawn := _selected_scene if _selected_scene else enemy_scene
-	
-	if scene_to_spawn == null:
+	if _selected_scene == null:
 		push_warning("Nessuna scena selezionata per lo spawn. Assegna enemy_scene o un inventario.")
 		return
-	var snapped_pos := Grid.snap_to_grid(world_pos)
-	var grid_pos := Grid.world_to_grid(snapped_pos)
-
-	if not Grid.is_world_position_spawnable(snapped_pos):
-		print("Area HUD non disponibile per lo spawn: ", snapped_pos)
-		return
-
-	if Grid.is_cell_occupied(grid_pos):
-		print("Cella già occupata: ", grid_pos)
-		return
 		
-	var entity := scene_to_spawn.instantiate()
+	var entity := _selected_scene.instantiate()
 	if entity is Node2D:
-		entity.global_position = snapped_pos
-		if not Grid.occupy_cell(grid_pos, entity, _selected_threat_modifier):
-			entity.queue_free()
-			return
+		entity.global_position = world_pos
 	
 	if is_instance_valid(_spawn_parent):
 		_spawn_parent.add_child(entity)
@@ -105,38 +84,3 @@ func _spawn_at(world_pos: Vector2) -> void:
 		add_child(entity)
 	_nav_region.bake_navigation_polygon(false)	
 	_last_spawned_entity = entity
-	_last_occupied_cell = grid_pos
-	_last_threat_modifier = _selected_threat_modifier
-
-func _delete_at(world_pos: Vector2) -> void:
-	var snapped_pos := Grid.snap_to_grid(world_pos)
-	var grid_pos := Grid.world_to_grid(snapped_pos)
-
-	if not Grid.is_cell_occupied(grid_pos):
-		print("Nessuna entità da eliminare nella cella: ", grid_pos)
-		return
-
-	var grid_element = Grid._occupied_cells[grid_pos]
-	if grid_element and is_instance_valid(grid_element.entity):
-		grid_element.entity.queue_free()
-		Threat.undo_spawn_entity(grid_element.threat_modifier)
-		Grid._occupied_cells.erase(grid_pos)
-		
-
-
-func highlight_cell(grid_pos: Vector2i) -> void:
-	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
-	if highlight_sprite == null:
-		highlight_sprite = Sprite2D.new()
-		highlight_sprite.name = "HighlightSprite"
-		add_child(highlight_sprite)
-	var cell_world_pos := Grid.grid_to_world(grid_pos)
-	highlight_sprite.global_position = cell_world_pos
-	highlight_sprite.texture = _selected_sprite_texture
-	var can_spawn_here := Grid.is_world_position_spawnable(cell_world_pos) and !Grid.is_cell_occupied(grid_pos)
-	highlight_sprite.modulate = Color(1, 1, 1, 0.5) if can_spawn_here else Color(1, 0, 0, 0.5)
-	
-func hide_highlight() -> void:
-	var highlight_sprite: Sprite2D = get_node_or_null("HighlightSprite")
-	if highlight_sprite != null:
-		highlight_sprite.queue_free()
